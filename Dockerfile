@@ -1,17 +1,14 @@
-####
-# This Dockerfile is used to package the yak-server application
-#
-# Build the image with:
-#
-# ./gradlew buildDocker
-#
-###
-
 FROM openjdk:17-alpine AS jre-build
 WORKDIR /app
 
 ARG JAR_FILE=target/*.jar
 COPY ${JAR_FILE} build/app.jar
+
+# copy the executable jar into the docker image
+COPY ${JAR_FILE} bundle/app.zip
+
+RUN unzip bundle/app.zip -d bundle/
+RUN ls -lah bundle/
 
 # find JDK dependencies dynamically from jar
 RUN jdeps \
@@ -23,8 +20,13 @@ RUN jdeps \
 --multi-release 17 \
 # output the dependencies at end of run
 --print-module-deps \
+# specify the the dependencies for the jar
+--class-path bundle/BOOT-INF/lib/* \
 # pipe the result of running jdeps on the app jar to file
 build/app.jar > jre-deps.info
+
+RUN cat jre-deps.info
+
 # new since last time!
 RUN jlink --verbose \
 --compress 2 \
