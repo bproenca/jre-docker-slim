@@ -1,4 +1,5 @@
-FROM openjdk:17-alpine AS jre-build
+FROM openjdk:17-alpine AS builder
+LABEL stage=builder
 WORKDIR /app
 
 ARG JAR_FILE=target/*.jar
@@ -7,8 +8,8 @@ COPY ${JAR_FILE} build/app.jar
 # copy the executable jar into the docker image
 COPY ${JAR_FILE} bundle/app.zip
 
-RUN unzip bundle/app.zip -d bundle/
-RUN ls -lah bundle/
+RUN unzip -q bundle/app.zip -d bundle/
+#RUN ls -lah bundle/
 
 # find JDK dependencies dynamically from jar
 RUN jdeps \
@@ -25,7 +26,7 @@ RUN jdeps \
 # pipe the result of running jdeps on the app jar to file
 build/app.jar > jre-deps.info
 
-RUN cat jre-deps.info
+#RUN cat jre-deps.info
 
 # new since last time!
 RUN jlink --verbose \
@@ -37,16 +38,14 @@ RUN jlink --verbose \
 --add-modules $(cat jre-deps.info)
 
 # take a smaller runtime image for the final output
-FROM alpine:latest
+FROM alpine:3.13
 WORKDIR /deployment
 
 # copy the custom JRE produced from jlink
-COPY --from=jre-build /app/jre jre
+COPY --from=builder /app/jre jre
 
 # copy the app
-COPY --from=jre-build /app/build/app.jar app.jar
-
-EXPOSE 8080
+COPY --from=builder /app/build/app.jar app.jar
 
 # run the app on startup
 ENTRYPOINT jre/bin/java -jar app.jar
