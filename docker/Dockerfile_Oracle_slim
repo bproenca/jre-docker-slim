@@ -44,7 +44,7 @@ WORKDIR /deployment
 # copy the custom JRE produced from jlink
 COPY --from=builder /app/jre jre
 
-# copy the app
+# copy the app (uber jar)
 COPY --from=builder /app/build/app.jar app.jar
 
 # run the app on startup
