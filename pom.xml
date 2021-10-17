@@ -9,10 +9,10 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>br.com.bcp</groupId>
-	<artifactId>simple-java-docker</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
-	<name>simple-java-docker</name>
-	<description>Demo project for Spring Boot</description>
+	<artifactId>jre-docker-slim</artifactId>
+	<version>1.0</version>
+	<name>jre-docker-slim</name>
+	<description>How to generate slim JRE Docker Image</description>
 	<properties>
 		<java.version>17</java.version>
 	</properties>
