@@ -1,4 +1,5 @@
-FROM openjdk:17-alpine AS builder
+FROM eclipse-temurin:17-alpine AS builder
+#FROM openjdk:17-alpine AS builder
 LABEL stage=builder
 WORKDIR /app
 
