@@ -35,3 +35,4 @@ Test:
 
 See also:  
 * https://levelup.gitconnected.com/java-developing-smaller-docker-images-with-jdeps-and-jlink-d4278718c550
+* https://blog.adoptium.net/2021/10/jlink-to-produce-own-runtime/
